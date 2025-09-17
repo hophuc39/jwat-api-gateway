@@ -1,27 +1,44 @@
-import { Inject, OnModuleInit } from '@nestjs/common';
-import { Args, Query } from '@nestjs/graphql';
-import { GrpcMethod, type ClientGrpc } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
 import {
-  AuthService,
-  ValidateTokenResponse,
-} from 'src/modules/auth/dto/auth.type';
+  BadRequestException,
+  Inject,
+  OnModuleInit,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { Args, Mutation } from '@nestjs/graphql';
+import { type ClientGrpc } from '@nestjs/microservices';
+import { AuthServiceClient } from 'proto/auth';
+import { firstValueFrom } from 'rxjs';
+import { AuthResponseModel } from './dto/auth-response.model';
+import { RegisterInput } from './dto/register.input';
+import { LoginInput } from './dto/login.input';
 
 export class AuthResolver implements OnModuleInit {
-  private authService: AuthService;
+  private authService: AuthServiceClient;
 
   constructor(@Inject('AUTH_PACKAGE') private readonly client: ClientGrpc) {}
 
   onModuleInit() {
-    this.authService = this.client.getService<AuthService>('AuthService');
+    this.authService = this.client.getService<AuthServiceClient>('AuthService');
   }
 
-  @Query(() => String)
-  @GrpcMethod('AuthService', 'ValidateToken')
-  async validateToken(@Args('token') token: string) {
-    const res: ValidateTokenResponse = await firstValueFrom(
-      this.authService.ValidateToken({ token }),
-    );
-    return res.valid ? `User ${res.userId} is valid` : 'Invalid token';
+  @Mutation(() => AuthResponseModel)
+  async register(@Args('input') input: RegisterInput) {
+    try {
+      return await firstValueFrom(this.authService.register(input));
+    } catch (err: any) {
+      if (err.code === 6) throw new BadRequestException(err.message);
+      throw err;
+    }
+  }
+
+  @Mutation(() => AuthResponseModel)
+  async login(@Args('input') input: LoginInput) {
+    try {
+      return await firstValueFrom(this.authService.login(input));
+    } catch (err: any) {
+      if (err.code === 5 || err.code === 16)
+        throw new UnauthorizedException(err.message);
+      throw err;
+    }
   }
 }

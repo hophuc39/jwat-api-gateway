@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package inverter;
+
+import "google/protobuf/timestamp.proto";
+
+message Inverter {
+  string id = 1;
+  string inverterCode = 2;
+  string inverterName = 3;
+  string slaveAddress = 4;
+  string startAddress = 5;
+  int32 numberOfPoles = 6;
+  google.protobuf.Timestamp updatedDate = 7;
+  bool useFlag = 8;
+}
+
+message Pagination {
+  int32 total = 1;
+  int32 page = 2;
+  int32 pageSize = 3;
+}
+
+message CreateInverterRequest {
+  string inverterCode = 1;
+  string inverterName = 2;
+  string slaveAddress = 3;
+  string startAddress = 4;
+  int32 numberOfPoles = 5;
+  bool useFlag = 6;
+}
+
+message CreateInverterResponse {
+  Inverter item = 1;
+}
+
+message UpdateInverterRequest {
+  string id = 1;
+  optional string inverterName = 2;
+  optional string slaveAddress = 3;
+  optional string startAddress = 4;
+  optional int32 numberOfPoles = 5;
+  optional bool useFlag = 6;
+}
+
+message UpdateInverterResponse {
+  Inverter item = 1;
+}
+
+message DeleteInverterRequest {
+  string id = 1;
+}
+
+message DeleteInverterResponse {
+  bool success = 1;
+}
+
+message FindInverterByIdRequest {
+  string id = 1;
+}
+
+message FindInverterByIdResponse {
+  Inverter item = 1;
+}
+
+message FindAllInvertersRequest {
+  int32 page = 1;
+  int32 pageSize = 2;
+
+  optional string inverterCode = 3;
+  optional string inverterName = 4;
+  optional bool useFlag = 5;
+}
+
+message FindAllInvertersResponse {
+  repeated Inverter items = 1;
+  Pagination pagination = 2;
+}
+
+service InverterService {
+  rpc CreateInverter(CreateInverterRequest) returns (CreateInverterResponse);
+  rpc FindAllInverters(FindAllInvertersRequest) returns (FindAllInvertersResponse);
+  rpc FindInverterById(FindInverterByIdRequest) returns (FindInverterByIdResponse);
+  rpc UpdateInverter(UpdateInverterRequest) returns (UpdateInverterResponse);
+  rpc DeleteInverter(DeleteInverterRequest) returns (DeleteInverterResponse);
+}

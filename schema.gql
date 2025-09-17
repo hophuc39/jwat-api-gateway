@@ -2,6 +2,84 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AuthResponseModel {
+  token: String!
+  userId: String!
+}
+
+type InverterModel {
+  id: String!
+  inverterCode: String!
+  inverterName: String!
+  slaveAddress: String!
+  startAddress: String!
+  numberOfPoles: Int!
+  updatedDate: DateTime
+  useFlag: Boolean!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Pagination {
+  total: Int!
+  page: Int!
+  pageSize: Int!
+}
+
+type InverterList {
+  items: [InverterModel!]!
+  pagination: Pagination!
+}
+
 type Query {
-  validateToken(token: String!): String!
+  findAllInverters(filter: FindAllInvertersInput!): InverterList!
+  findInverterById(id: String!): InverterModel
+}
+
+input FindAllInvertersInput {
+  page: Int! = 1
+  pageSize: Int! = 10
+  inverterCode: String
+  inverterName: String
+  useFlag: Boolean
+}
+
+type Mutation {
+  register(input: RegisterInput!): AuthResponseModel!
+  login(input: LoginInput!): AuthResponseModel!
+  createInverter(input: CreateInverterInput!): InverterModel!
+  updateInverter(input: UpdateInverterInput!): InverterModel!
+}
+
+input RegisterInput {
+  username: String!
+  fullName: String!
+  password: String!
+}
+
+input LoginInput {
+  username: String!
+  password: String!
+}
+
+input CreateInverterInput {
+  inverterCode: String!
+  inverterName: String!
+  slaveAddress: String!
+  startAddress: String!
+  numberOfPoles: Int!
+  useFlag: Boolean!
+}
+
+input UpdateInverterInput {
+  inverterCode: String
+  inverterName: String
+  slaveAddress: String
+  startAddress: String
+  numberOfPoles: Int
+  useFlag: Boolean
+  id: String!
 }
