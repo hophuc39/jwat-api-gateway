@@ -23,9 +23,13 @@ export interface LoginInput {
   password: string;
 }
 
+export interface RefreshTokenInput {
+  refreshToken: string;
+}
+
 export interface AuthResponse {
-  token: string;
-  userId: string;
+  accessToken: string;
+  refreshToken: string;
 }
 
 export const AUTH_PACKAGE_NAME = "auth";
@@ -137,17 +141,54 @@ export const LoginInput: MessageFns<LoginInput> = {
   },
 };
 
+function createBaseRefreshTokenInput(): RefreshTokenInput {
+  return { refreshToken: "" };
+}
+
+export const RefreshTokenInput: MessageFns<RefreshTokenInput> = {
+  encode(message: RefreshTokenInput, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.refreshToken !== "") {
+      writer.uint32(10).string(message.refreshToken);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RefreshTokenInput {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRefreshTokenInput();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.refreshToken = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseAuthResponse(): AuthResponse {
-  return { token: "", userId: "" };
+  return { accessToken: "", refreshToken: "" };
 }
 
 export const AuthResponse: MessageFns<AuthResponse> = {
   encode(message: AuthResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.token !== "") {
-      writer.uint32(10).string(message.token);
+    if (message.accessToken !== "") {
+      writer.uint32(10).string(message.accessToken);
     }
-    if (message.userId !== "") {
-      writer.uint32(18).string(message.userId);
+    if (message.refreshToken !== "") {
+      writer.uint32(18).string(message.refreshToken);
     }
     return writer;
   },
@@ -164,7 +205,7 @@ export const AuthResponse: MessageFns<AuthResponse> = {
             break;
           }
 
-          message.token = reader.string();
+          message.accessToken = reader.string();
           continue;
         }
         case 2: {
@@ -172,7 +213,7 @@ export const AuthResponse: MessageFns<AuthResponse> = {
             break;
           }
 
-          message.userId = reader.string();
+          message.refreshToken = reader.string();
           continue;
         }
       }
@@ -189,17 +230,21 @@ export interface AuthServiceClient {
   register(request: RegisterInput): Observable<AuthResponse>;
 
   login(request: LoginInput): Observable<AuthResponse>;
+
+  refreshToken(request: RefreshTokenInput): Observable<AuthResponse>;
 }
 
 export interface AuthServiceController {
   register(request: RegisterInput): Observable<AuthResponse>;
 
   login(request: LoginInput): Observable<AuthResponse>;
+
+  refreshToken(request: RefreshTokenInput): Observable<AuthResponse>;
 }
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["register", "login"];
+    const grpcMethods: string[] = ["register", "login", "refreshToken"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("AuthService", method)(constructor.prototype[method], method, descriptor);
@@ -234,11 +279,21 @@ export const AuthServiceService = {
     responseSerialize: (value: AuthResponse): Buffer => Buffer.from(AuthResponse.encode(value).finish()),
     responseDeserialize: (value: Buffer): AuthResponse => AuthResponse.decode(value),
   },
+  refreshToken: {
+    path: "/auth.AuthService/RefreshToken",
+    requestStream: false,
+    responseStream: false,
+    requestSerialize: (value: RefreshTokenInput): Buffer => Buffer.from(RefreshTokenInput.encode(value).finish()),
+    requestDeserialize: (value: Buffer): RefreshTokenInput => RefreshTokenInput.decode(value),
+    responseSerialize: (value: AuthResponse): Buffer => Buffer.from(AuthResponse.encode(value).finish()),
+    responseDeserialize: (value: Buffer): AuthResponse => AuthResponse.decode(value),
+  },
 } as const;
 
 export interface AuthServiceServer extends UntypedServiceImplementation {
   register: handleUnaryCall<RegisterInput, AuthResponse>;
   login: handleUnaryCall<LoginInput, AuthResponse>;
+  refreshToken: handleUnaryCall<RefreshTokenInput, AuthResponse>;
 }
 
 export interface MessageFns<T> {

@@ -5,17 +5,14 @@
 // source: inverter.proto
 
 /* eslint-disable */
-import { BinaryReader, BinaryWriter } from '@bufbuild/protobuf/wire';
-import type {
-  handleUnaryCall,
-  UntypedServiceImplementation,
-} from '@grpc/grpc-js';
-import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
-import { wrappers } from 'protobufjs';
-import { Observable } from 'rxjs';
-import { Timestamp } from './google/protobuf/timestamp';
+import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
+import type { handleUnaryCall, UntypedServiceImplementation } from "@grpc/grpc-js";
+import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
+import { wrappers } from "protobufjs";
+import { Observable } from "rxjs";
+import { Timestamp } from "./google/protobuf/timestamp";
 
-export const protobufPackage = 'inverter';
+export const protobufPackage = "inverter";
 
 export interface Inverter {
   id: string;
@@ -89,14 +86,11 @@ export interface FindAllInvertersResponse {
   pagination: Pagination | undefined;
 }
 
-export const INVERTER_PACKAGE_NAME = 'inverter';
+export const INVERTER_PACKAGE_NAME = "inverter";
 
-wrappers['.google.protobuf.Timestamp'] = {
+wrappers[".google.protobuf.Timestamp"] = {
   fromObject(value: Date) {
-    return {
-      seconds: value.getTime() / 1000,
-      nanos: (value.getTime() % 1000) * 1e6,
-    };
+    return { seconds: value.getTime() / 1000, nanos: (value.getTime() % 1000) * 1e6 };
   },
   toObject(message: { seconds: number; nanos: number }) {
     return new Date(message.seconds * 1000 + message.nanos / 1e6);
@@ -105,11 +99,11 @@ wrappers['.google.protobuf.Timestamp'] = {
 
 function createBaseInverter(): Inverter {
   return {
-    id: '',
-    inverterCode: '',
-    inverterName: '',
-    slaveAddress: '',
-    startAddress: '',
+    id: "",
+    inverterCode: "",
+    inverterName: "",
+    slaveAddress: "",
+    startAddress: "",
     numberOfPoles: 0,
     updatedDate: undefined,
     useFlag: false,
@@ -117,33 +111,27 @@ function createBaseInverter(): Inverter {
 }
 
 export const Inverter: MessageFns<Inverter> = {
-  encode(
-    message: Inverter,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
-    if (message.id !== '') {
+  encode(message: Inverter, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
-    if (message.inverterCode !== '') {
+    if (message.inverterCode !== "") {
       writer.uint32(18).string(message.inverterCode);
     }
-    if (message.inverterName !== '') {
+    if (message.inverterName !== "") {
       writer.uint32(26).string(message.inverterName);
     }
-    if (message.slaveAddress !== '') {
+    if (message.slaveAddress !== "") {
       writer.uint32(34).string(message.slaveAddress);
     }
-    if (message.startAddress !== '') {
+    if (message.startAddress !== "") {
       writer.uint32(42).string(message.startAddress);
     }
     if (message.numberOfPoles !== 0) {
       writer.uint32(48).int32(message.numberOfPoles);
     }
     if (message.updatedDate !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.updatedDate),
-        writer.uint32(58).fork(),
-      ).join();
+      Timestamp.encode(toTimestamp(message.updatedDate), writer.uint32(58).fork()).join();
     }
     if (message.useFlag !== false) {
       writer.uint32(64).bool(message.useFlag);
@@ -152,8 +140,7 @@ export const Inverter: MessageFns<Inverter> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): Inverter {
-    const reader =
-      input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseInverter();
     while (reader.pos < end) {
@@ -212,9 +199,7 @@ export const Inverter: MessageFns<Inverter> = {
             break;
           }
 
-          message.updatedDate = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32()),
-          );
+          message.updatedDate = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
         }
         case 8: {
@@ -240,10 +225,7 @@ function createBasePagination(): Pagination {
 }
 
 export const Pagination: MessageFns<Pagination> = {
-  encode(
-    message: Pagination,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: Pagination, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.total !== 0) {
       writer.uint32(8).int32(message.total);
     }
@@ -257,8 +239,7 @@ export const Pagination: MessageFns<Pagination> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): Pagination {
-    const reader =
-      input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePagination();
     while (reader.pos < end) {
@@ -299,31 +280,21 @@ export const Pagination: MessageFns<Pagination> = {
 };
 
 function createBaseCreateInverterRequest(): CreateInverterRequest {
-  return {
-    inverterCode: '',
-    inverterName: '',
-    slaveAddress: '',
-    startAddress: '',
-    numberOfPoles: 0,
-    useFlag: false,
-  };
+  return { inverterCode: "", inverterName: "", slaveAddress: "", startAddress: "", numberOfPoles: 0, useFlag: false };
 }
 
 export const CreateInverterRequest: MessageFns<CreateInverterRequest> = {
-  encode(
-    message: CreateInverterRequest,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
-    if (message.inverterCode !== '') {
+  encode(message: CreateInverterRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.inverterCode !== "") {
       writer.uint32(10).string(message.inverterCode);
     }
-    if (message.inverterName !== '') {
+    if (message.inverterName !== "") {
       writer.uint32(18).string(message.inverterName);
     }
-    if (message.slaveAddress !== '') {
+    if (message.slaveAddress !== "") {
       writer.uint32(26).string(message.slaveAddress);
     }
-    if (message.startAddress !== '') {
+    if (message.startAddress !== "") {
       writer.uint32(34).string(message.startAddress);
     }
     if (message.numberOfPoles !== 0) {
@@ -335,12 +306,8 @@ export const CreateInverterRequest: MessageFns<CreateInverterRequest> = {
     return writer;
   },
 
-  decode(
-    input: BinaryReader | Uint8Array,
-    length?: number,
-  ): CreateInverterRequest {
-    const reader =
-      input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(input: BinaryReader | Uint8Array, length?: number): CreateInverterRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCreateInverterRequest();
     while (reader.pos < end) {
@@ -409,22 +376,15 @@ function createBaseCreateInverterResponse(): CreateInverterResponse {
 }
 
 export const CreateInverterResponse: MessageFns<CreateInverterResponse> = {
-  encode(
-    message: CreateInverterResponse,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: CreateInverterResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.item !== undefined) {
       Inverter.encode(message.item, writer.uint32(10).fork()).join();
     }
     return writer;
   },
 
-  decode(
-    input: BinaryReader | Uint8Array,
-    length?: number,
-  ): CreateInverterResponse {
-    const reader =
-      input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(input: BinaryReader | Uint8Array, length?: number): CreateInverterResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCreateInverterResponse();
     while (reader.pos < end) {
@@ -449,15 +409,12 @@ export const CreateInverterResponse: MessageFns<CreateInverterResponse> = {
 };
 
 function createBaseUpdateInverterRequest(): UpdateInverterRequest {
-  return { id: '' };
+  return { id: "" };
 }
 
 export const UpdateInverterRequest: MessageFns<UpdateInverterRequest> = {
-  encode(
-    message: UpdateInverterRequest,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
-    if (message.id !== '') {
+  encode(message: UpdateInverterRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
     if (message.inverterName !== undefined) {
@@ -478,12 +435,8 @@ export const UpdateInverterRequest: MessageFns<UpdateInverterRequest> = {
     return writer;
   },
 
-  decode(
-    input: BinaryReader | Uint8Array,
-    length?: number,
-  ): UpdateInverterRequest {
-    const reader =
-      input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(input: BinaryReader | Uint8Array, length?: number): UpdateInverterRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUpdateInverterRequest();
     while (reader.pos < end) {
@@ -552,22 +505,15 @@ function createBaseUpdateInverterResponse(): UpdateInverterResponse {
 }
 
 export const UpdateInverterResponse: MessageFns<UpdateInverterResponse> = {
-  encode(
-    message: UpdateInverterResponse,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: UpdateInverterResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.item !== undefined) {
       Inverter.encode(message.item, writer.uint32(10).fork()).join();
     }
     return writer;
   },
 
-  decode(
-    input: BinaryReader | Uint8Array,
-    length?: number,
-  ): UpdateInverterResponse {
-    const reader =
-      input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(input: BinaryReader | Uint8Array, length?: number): UpdateInverterResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUpdateInverterResponse();
     while (reader.pos < end) {
@@ -592,26 +538,19 @@ export const UpdateInverterResponse: MessageFns<UpdateInverterResponse> = {
 };
 
 function createBaseDeleteInverterRequest(): DeleteInverterRequest {
-  return { id: '' };
+  return { id: "" };
 }
 
 export const DeleteInverterRequest: MessageFns<DeleteInverterRequest> = {
-  encode(
-    message: DeleteInverterRequest,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
-    if (message.id !== '') {
+  encode(message: DeleteInverterRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
     return writer;
   },
 
-  decode(
-    input: BinaryReader | Uint8Array,
-    length?: number,
-  ): DeleteInverterRequest {
-    const reader =
-      input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(input: BinaryReader | Uint8Array, length?: number): DeleteInverterRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDeleteInverterRequest();
     while (reader.pos < end) {
@@ -640,22 +579,15 @@ function createBaseDeleteInverterResponse(): DeleteInverterResponse {
 }
 
 export const DeleteInverterResponse: MessageFns<DeleteInverterResponse> = {
-  encode(
-    message: DeleteInverterResponse,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: DeleteInverterResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.success !== false) {
       writer.uint32(8).bool(message.success);
     }
     return writer;
   },
 
-  decode(
-    input: BinaryReader | Uint8Array,
-    length?: number,
-  ): DeleteInverterResponse {
-    const reader =
-      input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(input: BinaryReader | Uint8Array, length?: number): DeleteInverterResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDeleteInverterResponse();
     while (reader.pos < end) {
@@ -680,26 +612,19 @@ export const DeleteInverterResponse: MessageFns<DeleteInverterResponse> = {
 };
 
 function createBaseFindInverterByIdRequest(): FindInverterByIdRequest {
-  return { id: '' };
+  return { id: "" };
 }
 
 export const FindInverterByIdRequest: MessageFns<FindInverterByIdRequest> = {
-  encode(
-    message: FindInverterByIdRequest,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
-    if (message.id !== '') {
+  encode(message: FindInverterByIdRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
     return writer;
   },
 
-  decode(
-    input: BinaryReader | Uint8Array,
-    length?: number,
-  ): FindInverterByIdRequest {
-    const reader =
-      input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(input: BinaryReader | Uint8Array, length?: number): FindInverterByIdRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseFindInverterByIdRequest();
     while (reader.pos < end) {
@@ -728,22 +653,15 @@ function createBaseFindInverterByIdResponse(): FindInverterByIdResponse {
 }
 
 export const FindInverterByIdResponse: MessageFns<FindInverterByIdResponse> = {
-  encode(
-    message: FindInverterByIdResponse,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: FindInverterByIdResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.item !== undefined) {
       Inverter.encode(message.item, writer.uint32(10).fork()).join();
     }
     return writer;
   },
 
-  decode(
-    input: BinaryReader | Uint8Array,
-    length?: number,
-  ): FindInverterByIdResponse {
-    const reader =
-      input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(input: BinaryReader | Uint8Array, length?: number): FindInverterByIdResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseFindInverterByIdResponse();
     while (reader.pos < end) {
@@ -772,10 +690,7 @@ function createBaseFindAllInvertersRequest(): FindAllInvertersRequest {
 }
 
 export const FindAllInvertersRequest: MessageFns<FindAllInvertersRequest> = {
-  encode(
-    message: FindAllInvertersRequest,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: FindAllInvertersRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.page !== 0) {
       writer.uint32(8).int32(message.page);
     }
@@ -794,12 +709,8 @@ export const FindAllInvertersRequest: MessageFns<FindAllInvertersRequest> = {
     return writer;
   },
 
-  decode(
-    input: BinaryReader | Uint8Array,
-    length?: number,
-  ): FindAllInvertersRequest {
-    const reader =
-      input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(input: BinaryReader | Uint8Array, length?: number): FindAllInvertersRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseFindAllInvertersRequest();
     while (reader.pos < end) {
@@ -860,10 +771,7 @@ function createBaseFindAllInvertersResponse(): FindAllInvertersResponse {
 }
 
 export const FindAllInvertersResponse: MessageFns<FindAllInvertersResponse> = {
-  encode(
-    message: FindAllInvertersResponse,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
+  encode(message: FindAllInvertersResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     for (const v of message.items) {
       Inverter.encode(v!, writer.uint32(10).fork()).join();
     }
@@ -873,12 +781,8 @@ export const FindAllInvertersResponse: MessageFns<FindAllInvertersResponse> = {
     return writer;
   },
 
-  decode(
-    input: BinaryReader | Uint8Array,
-    length?: number,
-  ): FindAllInvertersResponse {
-    const reader =
-      input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(input: BinaryReader | Uint8Array, length?: number): FindAllInvertersResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseFindAllInvertersResponse();
     while (reader.pos < end) {
@@ -911,176 +815,117 @@ export const FindAllInvertersResponse: MessageFns<FindAllInvertersResponse> = {
 };
 
 export interface InverterServiceClient {
-  createInverter(
-    request: CreateInverterRequest,
-  ): Observable<CreateInverterResponse>;
+  createInverter(request: CreateInverterRequest): Observable<CreateInverterResponse>;
 
-  findAllInverters(
-    request: FindAllInvertersRequest,
-  ): Observable<FindAllInvertersResponse>;
+  findAllInverters(request: FindAllInvertersRequest): Observable<FindAllInvertersResponse>;
 
-  findInverterById(
-    request: FindInverterByIdRequest,
-  ): Observable<FindInverterByIdResponse>;
+  findInverterById(request: FindInverterByIdRequest): Observable<FindInverterByIdResponse>;
 
-  updateInverter(
-    request: UpdateInverterRequest,
-  ): Observable<UpdateInverterResponse>;
+  updateInverter(request: UpdateInverterRequest): Observable<UpdateInverterResponse>;
 
-  deleteInverter(
-    request: DeleteInverterRequest,
-  ): Observable<DeleteInverterResponse>;
+  deleteInverter(request: DeleteInverterRequest): Observable<DeleteInverterResponse>;
 }
 
 export interface InverterServiceController {
-  createInverter(
-    request: CreateInverterRequest,
-  ): Observable<CreateInverterResponse>;
+  createInverter(request: CreateInverterRequest): Observable<CreateInverterResponse>;
 
-  findAllInverters(
-    request: FindAllInvertersRequest,
-  ): Observable<FindAllInvertersResponse>;
+  findAllInverters(request: FindAllInvertersRequest): Observable<FindAllInvertersResponse>;
 
-  findInverterById(
-    request: FindInverterByIdRequest,
-  ): Observable<FindInverterByIdResponse>;
+  findInverterById(request: FindInverterByIdRequest): Observable<FindInverterByIdResponse>;
 
-  updateInverter(
-    request: UpdateInverterRequest,
-  ): Observable<UpdateInverterResponse>;
+  updateInverter(request: UpdateInverterRequest): Observable<UpdateInverterResponse>;
 
-  deleteInverter(
-    request: DeleteInverterRequest,
-  ): Observable<DeleteInverterResponse>;
+  deleteInverter(request: DeleteInverterRequest): Observable<DeleteInverterResponse>;
 }
 
 export function InverterServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = [
-      'createInverter',
-      'findAllInverters',
-      'findInverterById',
-      'updateInverter',
-      'deleteInverter',
+      "createInverter",
+      "findAllInverters",
+      "findInverterById",
+      "updateInverter",
+      "deleteInverter",
     ];
     for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(
-        constructor.prototype,
-        method,
-      );
-      GrpcMethod('InverterService', method)(
-        constructor.prototype[method],
-        method,
-        descriptor,
-      );
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcMethod("InverterService", method)(constructor.prototype[method], method, descriptor);
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(
-        constructor.prototype,
-        method,
-      );
-      GrpcStreamMethod('InverterService', method)(
-        constructor.prototype[method],
-        method,
-        descriptor,
-      );
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcStreamMethod("InverterService", method)(constructor.prototype[method], method, descriptor);
     }
   };
 }
 
-export const INVERTER_SERVICE_NAME = 'InverterService';
+export const INVERTER_SERVICE_NAME = "InverterService";
 
 export type InverterServiceService = typeof InverterServiceService;
 export const InverterServiceService = {
   createInverter: {
-    path: '/inverter.InverterService/CreateInverter',
+    path: "/inverter.InverterService/CreateInverter",
     requestStream: false,
     responseStream: false,
     requestSerialize: (value: CreateInverterRequest): Buffer =>
       Buffer.from(CreateInverterRequest.encode(value).finish()),
-    requestDeserialize: (value: Buffer): CreateInverterRequest =>
-      CreateInverterRequest.decode(value),
+    requestDeserialize: (value: Buffer): CreateInverterRequest => CreateInverterRequest.decode(value),
     responseSerialize: (value: CreateInverterResponse): Buffer =>
       Buffer.from(CreateInverterResponse.encode(value).finish()),
-    responseDeserialize: (value: Buffer): CreateInverterResponse =>
-      CreateInverterResponse.decode(value),
+    responseDeserialize: (value: Buffer): CreateInverterResponse => CreateInverterResponse.decode(value),
   },
   findAllInverters: {
-    path: '/inverter.InverterService/FindAllInverters',
+    path: "/inverter.InverterService/FindAllInverters",
     requestStream: false,
     responseStream: false,
     requestSerialize: (value: FindAllInvertersRequest): Buffer =>
       Buffer.from(FindAllInvertersRequest.encode(value).finish()),
-    requestDeserialize: (value: Buffer): FindAllInvertersRequest =>
-      FindAllInvertersRequest.decode(value),
+    requestDeserialize: (value: Buffer): FindAllInvertersRequest => FindAllInvertersRequest.decode(value),
     responseSerialize: (value: FindAllInvertersResponse): Buffer =>
       Buffer.from(FindAllInvertersResponse.encode(value).finish()),
-    responseDeserialize: (value: Buffer): FindAllInvertersResponse =>
-      FindAllInvertersResponse.decode(value),
+    responseDeserialize: (value: Buffer): FindAllInvertersResponse => FindAllInvertersResponse.decode(value),
   },
   findInverterById: {
-    path: '/inverter.InverterService/FindInverterById',
+    path: "/inverter.InverterService/FindInverterById",
     requestStream: false,
     responseStream: false,
     requestSerialize: (value: FindInverterByIdRequest): Buffer =>
       Buffer.from(FindInverterByIdRequest.encode(value).finish()),
-    requestDeserialize: (value: Buffer): FindInverterByIdRequest =>
-      FindInverterByIdRequest.decode(value),
+    requestDeserialize: (value: Buffer): FindInverterByIdRequest => FindInverterByIdRequest.decode(value),
     responseSerialize: (value: FindInverterByIdResponse): Buffer =>
       Buffer.from(FindInverterByIdResponse.encode(value).finish()),
-    responseDeserialize: (value: Buffer): FindInverterByIdResponse =>
-      FindInverterByIdResponse.decode(value),
+    responseDeserialize: (value: Buffer): FindInverterByIdResponse => FindInverterByIdResponse.decode(value),
   },
   updateInverter: {
-    path: '/inverter.InverterService/UpdateInverter',
+    path: "/inverter.InverterService/UpdateInverter",
     requestStream: false,
     responseStream: false,
     requestSerialize: (value: UpdateInverterRequest): Buffer =>
       Buffer.from(UpdateInverterRequest.encode(value).finish()),
-    requestDeserialize: (value: Buffer): UpdateInverterRequest =>
-      UpdateInverterRequest.decode(value),
+    requestDeserialize: (value: Buffer): UpdateInverterRequest => UpdateInverterRequest.decode(value),
     responseSerialize: (value: UpdateInverterResponse): Buffer =>
       Buffer.from(UpdateInverterResponse.encode(value).finish()),
-    responseDeserialize: (value: Buffer): UpdateInverterResponse =>
-      UpdateInverterResponse.decode(value),
+    responseDeserialize: (value: Buffer): UpdateInverterResponse => UpdateInverterResponse.decode(value),
   },
   deleteInverter: {
-    path: '/inverter.InverterService/DeleteInverter',
+    path: "/inverter.InverterService/DeleteInverter",
     requestStream: false,
     responseStream: false,
     requestSerialize: (value: DeleteInverterRequest): Buffer =>
       Buffer.from(DeleteInverterRequest.encode(value).finish()),
-    requestDeserialize: (value: Buffer): DeleteInverterRequest =>
-      DeleteInverterRequest.decode(value),
+    requestDeserialize: (value: Buffer): DeleteInverterRequest => DeleteInverterRequest.decode(value),
     responseSerialize: (value: DeleteInverterResponse): Buffer =>
       Buffer.from(DeleteInverterResponse.encode(value).finish()),
-    responseDeserialize: (value: Buffer): DeleteInverterResponse =>
-      DeleteInverterResponse.decode(value),
+    responseDeserialize: (value: Buffer): DeleteInverterResponse => DeleteInverterResponse.decode(value),
   },
 } as const;
 
 export interface InverterServiceServer extends UntypedServiceImplementation {
-  createInverter: handleUnaryCall<
-    CreateInverterRequest,
-    CreateInverterResponse
-  >;
-  findAllInverters: handleUnaryCall<
-    FindAllInvertersRequest,
-    FindAllInvertersResponse
-  >;
-  findInverterById: handleUnaryCall<
-    FindInverterByIdRequest,
-    FindInverterByIdResponse
-  >;
-  updateInverter: handleUnaryCall<
-    UpdateInverterRequest,
-    UpdateInverterResponse
-  >;
-  deleteInverter: handleUnaryCall<
-    DeleteInverterRequest,
-    DeleteInverterResponse
-  >;
+  createInverter: handleUnaryCall<CreateInverterRequest, CreateInverterResponse>;
+  findAllInverters: handleUnaryCall<FindAllInvertersRequest, FindAllInvertersResponse>;
+  findInverterById: handleUnaryCall<FindInverterByIdRequest, FindInverterByIdResponse>;
+  updateInverter: handleUnaryCall<UpdateInverterRequest, UpdateInverterResponse>;
+  deleteInverter: handleUnaryCall<DeleteInverterRequest, DeleteInverterResponse>;
 }
 
 function toTimestamp(date: Date): Timestamp {

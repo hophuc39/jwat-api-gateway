@@ -13,12 +13,17 @@ message LoginInput {
   string password = 2;
 }
 
+message RefreshTokenInput {
+  string refreshToken = 1;
+}
+
 message AuthResponse {
-  string token = 1;
-  string userId = 2;
+  string accessToken = 1;
+  string refreshToken = 2;
 }
 
 service AuthService {
   rpc Register(RegisterInput) returns (AuthResponse);
   rpc Login(LoginInput) returns (AuthResponse);
+  rpc RefreshToken(RefreshTokenInput) returns (AuthResponse);
 }

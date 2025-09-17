@@ -11,6 +11,7 @@ import { firstValueFrom } from 'rxjs';
 import { AuthResponseModel } from './dto/auth-response.model';
 import { RegisterInput } from './dto/register.input';
 import { LoginInput } from './dto/login.input';
+import { RefreshTokenInput } from './dto/refresh-token.input';
 
 export class AuthResolver implements OnModuleInit {
   private authService: AuthServiceClient;
@@ -35,6 +36,17 @@ export class AuthResolver implements OnModuleInit {
   async login(@Args('input') input: LoginInput) {
     try {
       return await firstValueFrom(this.authService.login(input));
+    } catch (err: any) {
+      if (err.code === 5 || err.code === 16)
+        throw new UnauthorizedException(err.message);
+      throw err;
+    }
+  }
+
+  @Mutation(() => AuthResponseModel)
+  async refreshToken(@Args('input') input: RefreshTokenInput) {
+    try {
+      return await firstValueFrom(this.authService.refreshToken(input));
     } catch (err: any) {
       if (err.code === 5 || err.code === 16)
         throw new UnauthorizedException(err.message);

@@ -3,8 +3,8 @@
 # ------------------------------------------------------
 
 type AuthResponseModel {
-  token: String!
-  userId: String!
+  accessToken: String!
+  refreshToken: String!
 }
 
 type InverterModel {
@@ -50,6 +50,7 @@ input FindAllInvertersInput {
 type Mutation {
   register(input: RegisterInput!): AuthResponseModel!
   login(input: LoginInput!): AuthResponseModel!
+  refreshToken(input: RefreshTokenInput!): AuthResponseModel!
   createInverter(input: CreateInverterInput!): InverterModel!
   updateInverter(input: UpdateInverterInput!): InverterModel!
 }
@@ -63,6 +64,10 @@ input RegisterInput {
 input LoginInput {
   username: String!
   password: String!
+}
+
+input RefreshTokenInput {
+  refreshToken: String!
 }
 
 input CreateInverterInput {
