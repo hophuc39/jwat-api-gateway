@@ -15,6 +15,7 @@ import { InverterModule } from './modules/inverter/inverter.module';
     }),
     ConfigModule.forRoot({
       load: [configuration],
+      isGlobal: true,
     }),
     AuthModule,
     InverterModule,

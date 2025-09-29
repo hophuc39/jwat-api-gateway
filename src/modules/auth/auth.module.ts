@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AuthResolver } from './auth.resolver';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { join } from 'path';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './jwt.strategy';
-import { GqlAuthGuard } from './gql-auth.guard';
+import { GqlAuthGuard } from './guard/gql-auth.guard';
+import { getProtoPath } from 'jwat-protobuf';
 
 @Module({
   imports: [
@@ -17,7 +17,7 @@ import { GqlAuthGuard } from './gql-auth.guard';
           transport: Transport.GRPC,
           options: {
             package: 'auth',
-            protoPath: join(process.cwd(), 'proto/auth.proto'),
+            protoPath: getProtoPath('AUTH'),
             url:
               configService.get<string>('AUTH_SERVICE_URL') ||
               'localhost:50052',

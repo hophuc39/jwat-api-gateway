@@ -9,15 +9,16 @@ import {
 import { Args, Mutation, Query } from '@nestjs/graphql';
 import { type ClientGrpc } from '@nestjs/microservices';
 import { InverterModel } from './dto/inverter.model';
-import { InverterServiceClient } from 'proto/inverter';
 import { firstValueFrom } from 'rxjs';
-import { GqlAuthGuard } from '../auth/gql-auth.guard';
+import { GqlAuthGuard } from '../auth/guard/gql-auth.guard';
 import { InverterList } from './dto/list-inverter.model';
 import { FindAllInvertersInput } from './dto/find-all-inverters.input';
 import { CreateInverterInput } from './dto/create-inverter.input';
-import toDate from './date.helper';
 import { UpdateInverterInput } from './dto/update-inverter.input';
 import { GraphQLError } from 'graphql';
+import { InverterServiceClient } from 'jwat-protobuf/inverter';
+import { Permissions } from '../auth/guard/permission.decorator';
+import { PermissionGuard } from '../auth/guard/permission.guard';
 
 export class InverterResolver implements OnModuleInit {
   private inverterService: InverterServiceClient;
@@ -31,8 +32,9 @@ export class InverterResolver implements OnModuleInit {
       this.client.getService<InverterServiceClient>('InverterService');
   }
 
+  @UseGuards(GqlAuthGuard, PermissionGuard)
+  @Permissions('create.inverter')
   @Mutation(() => InverterModel)
-  @UseGuards(GqlAuthGuard)
   async createInverter(
     @Args('input', { type: () => CreateInverterInput })
     input: CreateInverterInput,
@@ -63,11 +65,12 @@ export class InverterResolver implements OnModuleInit {
       throw new InternalServerErrorException('Failed to create inverter');
     }
 
-    return { ...inverter, updatedDate: toDate(inverter.updatedDate as any) };
+    return { inverter };
   }
 
+  @UseGuards(GqlAuthGuard, PermissionGuard)
+  @Permissions('update.inverter')
   @Mutation(() => InverterModel)
-  @UseGuards(GqlAuthGuard)
   async updateInverter(
     @Args('input', { type: () => UpdateInverterInput })
     input: UpdateInverterInput,
@@ -102,11 +105,12 @@ export class InverterResolver implements OnModuleInit {
       });
     }
 
-    return { ...inverter, updatedDate: toDate(inverter.updatedDate as any) };
+    return inverter;
   }
 
+  @UseGuards(GqlAuthGuard, PermissionGuard)
+  @Permissions('list.inverter')
   @Query(() => InverterList)
-  @UseGuards(GqlAuthGuard)
   async findAllInverters(
     @Args('filter', { type: () => FindAllInvertersInput })
     filter: FindAllInvertersInput,
@@ -126,10 +130,7 @@ export class InverterResolver implements OnModuleInit {
     const { items, pagination } = data;
 
     return {
-      items: (items ?? []).map((inv) => ({
-        ...inv,
-        updatedDate: toDate(inv.updatedDate as any),
-      })),
+      items: items ?? [],
       pagination: pagination ?? {
         total: 0,
         page: page ?? 1,
@@ -158,7 +159,7 @@ export class InverterResolver implements OnModuleInit {
         throw new NotFoundException(`Inverter with ID ${id} not found`);
       }
 
-      return { ...inverter, updatedDate: toDate(inverter.updatedDate as any) };
+      return inverter;
     } catch (error) {
       if (error.code === 5) {
         throw new NotFoundException(`Inverter with ID ${id} not found`);

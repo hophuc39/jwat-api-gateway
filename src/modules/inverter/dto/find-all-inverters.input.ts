@@ -16,4 +16,10 @@ export class FindAllInvertersInput {
 
   @Field({ nullable: true })
   useFlag?: boolean;
+
+  @Field({ defaultValue: 'id' })
+  sortBy?: string;
+
+  @Field({ defaultValue: 'asc' })
+  sortOrder?: string;
 }

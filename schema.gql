@@ -7,6 +7,14 @@ type AuthResponseModel {
   refreshToken: String!
 }
 
+type UserInfoModel {
+  id: String!
+  username: String!
+  fullName: String!
+  roles: [String!]!
+  permissions: [String!]!
+}
+
 type InverterModel {
   id: String!
   inverterCode: String!
@@ -35,8 +43,13 @@ type InverterList {
 }
 
 type Query {
+  getUserInfo(input: GetUserInfoInput!): UserInfoModel!
   findAllInverters(filter: FindAllInvertersInput!): InverterList!
   findInverterById(id: String!): InverterModel
+}
+
+input GetUserInfoInput {
+  id: String!
 }
 
 input FindAllInvertersInput {
@@ -45,6 +58,8 @@ input FindAllInvertersInput {
   inverterCode: String
   inverterName: String
   useFlag: Boolean
+  sortBy: String! = "id"
+  sortOrder: String! = "asc"
 }
 
 type Mutation {
